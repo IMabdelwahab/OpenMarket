@@ -1,5 +1,7 @@
 from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Permission
 from django.db import models
+from django.core.validators import MinLengthValidator
+
 
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
@@ -19,10 +21,10 @@ class User(AbstractUser):
     class Role(models.TextChoices):
         CLIENT = "Client" , "Client"
         ARTISAN = "Artisan" , "Artisan"
-    # first_name: CharField (max_length=150, blank=True)
-    # last_name: CharField (max_length=150, blank=True) already exist
+        ADMIN = "Admin", "Admin"
+
     username = None  # drop the default field entirely
-    phone_number = models.CharField(max_length=20, unique=True)
+    phone_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)], unique=True)
 
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = []  # fields prompted for besides USERNAME_FIELD + password, e.g. when using createsuperuser
@@ -54,8 +56,8 @@ class Artisan(models.Model):
         related_name="artisans",
         null=True 
     )
-    specialities = models.CharField(max_length=255)
-    zone_intervention = models.CharField(max_length=255)
+    specialities = models.CharField(max_length=255, blank=True)
+    zone_intervention = models.CharField(max_length=255, blank=True)
     statut_verification = models.CharField(
         max_length=20,
         choices=StatutVerification.choices,
