@@ -2,7 +2,12 @@ from django.contrib.auth.models import AbstractUser, BaseUserManager, Group, Per
 from django.db import models
 from django.core.validators import MinLengthValidator
 
+class City(models.Model):
+    name = models.CharField(max_length=100, unique=True)
 
+    def __str__(self):
+        return self.name
+    
 class UserManager(BaseUserManager):
     def create_user(self, phone_number, password=None, **extra_fields):
         if not phone_number:
@@ -25,6 +30,8 @@ class User(AbstractUser):
 
     username = None  # drop the default field entirely
     phone_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)], unique=True)
+    city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True, default=None)
+    neighborhood = models.CharField(max_length=100, blank=True)
 
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = []  # fields prompted for besides USERNAME_FIELD + password, e.g. when using createsuperuser
@@ -57,12 +64,10 @@ class Artisan(models.Model):
         null=True 
     )
     specialities = models.CharField(max_length=255, blank=True)
-    zone_intervention = models.CharField(max_length=255, blank=True)
-    statut_verification = models.CharField(
-        max_length=20,
-        choices=StatutVerification.choices,
-        default=StatutVerification.NON_VERIFIE,
+    statut_verification = models.CharField(max_length=20, choices=StatutVerification.choices, default=StatutVerification.NON_VERIFIE,
     )
+    cin = models.CharField(max_length=100, unique=True, null=True, blank=True)
+    
 
 
 class ServiceRequest(models.Model):

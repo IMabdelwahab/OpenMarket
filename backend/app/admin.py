@@ -14,21 +14,31 @@ class ClientAdmin(admin.ModelAdmin):
     ordering = ('id',)
 
 class ArtisanAdmin(admin.ModelAdmin):
-    list_display = ('id', 'user','user__first_name','user__last_name','categorie')
-    search_fields = ('user__phone_number',)
+    list_display = ('id', 'user','user__first_name','user__last_name','categorie','specialities')
+    search_fields = ['user__phone_number']
+    ordering = ('id',)
+
+class CategorieAdmin(admin.ModelAdmin):
+    list_display = ('id', 'nom')
+    search_fields = ['nom']
+    ordering = ('id',)
+
+class CityAdmin(admin.ModelAdmin):
+    list_display = ('id', 'name')
+    search_fields = ['name']
     ordering = ('id',)
 
 
 
 
-
-admin.site.register(Categorie)
+admin.site.register(Categorie, CategorieAdmin)
 admin.site.register(Review)
 admin.site.register(User, UserAdmin)
 admin.site.register(Client, ClientAdmin)
 admin.site.register(Artisan, ArtisanAdmin)
 admin.site.register(TechnicalIntervention)
 admin.site.register(Proposal)
+admin.site.register(City, CityAdmin)
 
 admin.site.site_header = "OpenMarket"
 admin.site.site_title = "OpenMarket"

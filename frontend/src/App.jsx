@@ -1,24 +1,26 @@
-import { useState } from 'react'
 import './App.css'
-import { Route, Routes, Link, BrowserRouter, useNavigate } from 'react-router'
-import { useForm } from 'react-hook-form'
+import { BrowserRouter, Route, Routes } from 'react-router'
 
 import NotFound from "./pages/NotFound"
+import Home from "./pages/Home"
+import Login from "./pages/Login"
+import Signup from "./pages/Signup"
+import ArtisanDirectory from "./pages/ArtisanDirectory"
 
 function App() {
-  const [count, setCount] = useState(0)
-
   return (
-    <>
     <BrowserRouter>
       <Routes>
-        <Route path='/' element={<div>helllllo there</div>}/>
+        <Route path="/" element={<Home />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/signUp" element={<Signup />} />
+        <Route path="/artisans" element={<ArtisanDirectory />} />
 
         {/* Not Found Page */}
-        <Route path='*' element={<NotFound/>}/>
+        <Route path="*" element={<NotFound />} />
       </Routes>
     </BrowserRouter>
-    </>
   )
 }
 

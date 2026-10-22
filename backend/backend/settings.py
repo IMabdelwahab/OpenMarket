@@ -25,8 +25,13 @@ SECRET_KEY = 'django-insecure-=*4lonf+6dg)i=-7-nf(!zv_smt$0b*#%vb36t$0=ub^qwl8zc
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",  # Common React port
+    "http://localhost:5173",  # Common Vite/Vue port
+    # "https://yourfrontenddomain.com",
+]
 
 # Application definition
 AUTH_USER_MODEL = "app.User"
@@ -40,16 +45,37 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'app',
     'rest_framework',
-    'rest_framework_simplejwt'
+    'rest_framework_simplejwt',
+    'corsheaders',
 ]
 
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework_simplejwt.authentication.JWTAuthentication',
-    )
+    ),
+    # 'DEFAULT_PERMISSION_CLASSES': (
+    #     'rest_framework'
+    # )
 }
 
+# settings.py
+from datetime import timedelta
+
+SIMPLE_JWT = {
+    # How long the access token is valid (e.g., 15 minutes)
+    "ACCESS_TOKEN_LIFETIME": timedelta(days=7),
+    
+    # How long the refresh token is valid (e.g., 7 days)
+    "REFRESH_TOKEN_LIFETIME": timedelta(days=15),
+    
+    # # Optional security enhancements:
+    # "ROTATE_REFRESH_TOKENS": True,      # Issues a new refresh token when a new access token is requested
+    # "BLACKLIST_AFTER_ROTATION": True,  # Blacklists old refresh tokens so they can't be reused
+}
+
+
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',  # Must be at the top
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

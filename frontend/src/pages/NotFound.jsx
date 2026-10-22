@@ -1,5 +1,4 @@
-import { useState, useEffect } from 'react'
-import { Route, Routes, BrowserRouter, Link, useNavigate } from 'react-router'
+import { Link } from 'react-router'
 
 function NotFound() {
     
