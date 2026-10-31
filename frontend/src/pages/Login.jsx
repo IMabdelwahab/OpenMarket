@@ -1,8 +1,9 @@
-import { useState } from 'react'
+import { useState, useContext } from 'react'
 import { Link , useNavigate } from 'react-router'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import axios from 'axios'
+import authContext from '../contexts/authContext'
 
 function Icon({ name, className = '' }) {
   const paths = {
@@ -20,17 +21,19 @@ function Icon({ name, className = '' }) {
 }
 
 function Login() {
+  const {isauthenticated, setIsAuthenticated, accessToken, setAccessToken, refreshToken, setRefreshToken, setRole} = useContext(authContext)
+
   const [showPassword, setShowPassword] = useState(false)
   const [submitted, setSubmitted] = useState(false)
   const [phoneNumber, setPhoneNumber] = useState()
   const [password, setPassword] = useState()
-  const [accessToken, setAccessToken] = useState()
-  const [refreshToken, setRefreshToken] = useState()
+
   const navigate = useNavigate()
-  
+ 
   const handleSubmit = async (event) => {
     event.preventDefault()
     console.log(`phone_number : ${phoneNumber}\npassword : ${password}`);
+
     try {
       const response = await axios.post('http://127.0.0.1:8000/api/token/',
         {
@@ -40,20 +43,20 @@ function Login() {
       )
       setAccessToken(response.data['access'])
       setRefreshToken(response.data['refresh'])
-      // console.log(`access : ${accessToken}\nrefresh : ${refreshToken}`)
       const response2 = await axios.get(`http://127.0.0.1:8000/api/getUserRole/${phoneNumber}`,
         {
           'phone_number' : phoneNumber
         }
       )
-      const role = response2.data['role']
-      role === "Client" ?  navigate("/") : navigate("/zen")
-
-    } catch (error) {
+      const userRole = response2.data['role']
+      setRole(userRole)
+      setIsAuthenticated(true)
+      navigate(userRole === 'artisan' ? '/artisanProfile' : '/clientProfile')
+    } 
+    catch (error) {
       console.log(error.message);
-      
     }
-    // setSubmitted(true)
+    
   }
 
   return (
@@ -96,34 +99,21 @@ function Login() {
             </div>
           </aside>
 
-          <section className="login-card" aria-labelledby="login-title">
-            {submitted ? (
-              <div className="login-success" role="status">
-                <span><Icon name="check" /></span>
-                <h2>Connexion prête</h2>
-                <p>Le formulaire fonctionne côté interface. Il pourra être relié à votre service d’authentification lorsque le backend sera prêt.</p>
-                <button type="button" onClick={() => setSubmitted(false)}>Retour au formulaire</button>
-              </div>
-            ) : (
+          <section className="login-card" aria-labelledby="login-title">    
               <>
                 <div className="login-heading">
                   <span>HEUREUX DE VOUS REVOIR</span>
                   <h2 id="login-title">Connectez-vous à votre espace</h2>
                   <p>Suivez vos projets et retrouvez vos artisans de confiance.</p>
                 </div>
-
-
                 <div className="login-divider">
-                  {/* <span>ou avec vos identifiants</span> */}
                 </div>
-
                 <form className="login-form" onSubmit={handleSubmit}>
                   <label htmlFor="identifier">numéro de téléphone <b>*</b></label>
                   <div className="login-input">
                     <Icon name="user" />
                     <input onChange={(event)=>{setPhoneNumber(event.target.value)}} id="identifier" name="identifier" type="number" autoComplete="phone number" placeholder="exemple 0612..." required />
                   </div>
-
                   <div className="password-label">
                     <label htmlFor="login-password">Mot de passe <b>*</b></label>
                     <Link to="/mot-de-passe-oublie">Mot de passe oublié ?</Link>
@@ -144,7 +134,7 @@ function Login() {
                 {/* <p className="privacy-note"><Icon name="shield" /> Vos données sont chiffrées et restent strictement confidentielles.</p> */}
                 <p className="signup-prompt">Vous n'avez pas encore de compte ? <Link to="/signUp">Créer un compte gratuitement</Link></p>
               </>
-            )}
+            
           </section>
         </div>
 

@@ -27,18 +27,19 @@ class User(AbstractUser):
         CLIENT = "Client" , "Client"
         ARTISAN = "Artisan" , "Artisan"
         ADMIN = "Admin", "Admin"
-
+    profilePicture = models.ImageField(upload_to="profile_pictures/", null=True, blank=True) # requires pillow library
     username = None  # drop the default field entirely
     phone_number = models.CharField(max_length=10, validators=[MinLengthValidator(10)], unique=True)
     city = models.ForeignKey(City, on_delete=models.SET_NULL, null=True, blank=True, default=None)
     neighborhood = models.CharField(max_length=100, blank=True)
-
+    role = models.CharField(max_length=10, choices=Role.choices, default=Role.CLIENT)
+    
     USERNAME_FIELD = "phone_number"
     REQUIRED_FIELDS = []  # fields prompted for besides USERNAME_FIELD + password, e.g. when using createsuperuser
 
     objects = UserManager()
 
-    role = models.CharField(max_length=10, choices=Role.choices, default=Role.CLIENT)
+    
 
 class Client(models.Model):
     # """A user who publishes service requests and reviews artisans."""

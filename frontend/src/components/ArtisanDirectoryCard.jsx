@@ -7,7 +7,7 @@ function ArtisanDirectoryCard({ artisan, onQuote }) {
           <img src={artisan.image} alt={`Portrait de ${artisan.name}`} />
           <span className="artisan-rating"><span className="material-symbols-outlined">star</span>{artisan.rating}</span>
         </div>
-        <small>{artisan.reviews}</small>
+        {/* <small>{artisan.reviews}</small> */}
       </div>
 
       <div className="artisan-card-body">

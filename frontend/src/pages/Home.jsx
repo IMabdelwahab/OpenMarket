@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState,useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import Hero from '../components/Hero'
@@ -6,10 +6,12 @@ import PopularServices from '../components/PopularServices'
 import HowItWorks from '../components/HowItWorks'
 import Testimonials from '../components/Testimonials'
 import ArtisanCallToAction from '../components/ArtisanCallToAction'
+import authContext from '../contexts/authContext'
 
 function Home() {
   const [search, setSearch] = useState(null)
-
+  const { isauthenticated, accessToken, refreshToken, role } = useContext(authContext)
+  console.log({ isauthenticated, accessToken, refreshToken, role })
   function handleSearch(event) {
     event.preventDefault()
     

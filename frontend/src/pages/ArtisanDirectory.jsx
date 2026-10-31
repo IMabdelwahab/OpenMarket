@@ -1,10 +1,12 @@
-import { useMemo, useState } from 'react'
+import { useEffect, useMemo, useState,useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import DirectorySearch from '../components/DirectorySearch'
 import DirectoryFilters from '../components/DirectoryFilters'
 import ArtisanDirectoryCard from '../components/ArtisanDirectoryCard'
 import '../artisan-directory.css'
+import authContext from '../contexts/authContext'
+import { Navigate, useNavigate } from 'react-router'
 
 const artisans = [
   {
@@ -62,7 +64,20 @@ function ArtisanDirectory() {
   const [sort, setSort] = useState('rating')
   const [budget, setBudget] = useState('450')
   const [quoteTarget, setQuoteTarget] = useState('')
+  const {isauthenticated, setIsAuthenticated, accessToken, setAccessToken, refreshToken, setRefreshToken, role, setRole} = useContext(authContext)
 
+  const navigate = useNavigate()
+
+  const checkAuth = () =>{
+    if (!isauthenticated){
+      navigate('/login')
+    }
+  }
+
+  useEffect(()=>{
+    // checkAuth()
+    
+  },[])
   const sortedArtisans = useMemo(() => {
     const result = [...artisans]
     if (sort === 'price') result.sort((a, b) => a.price - b.price)
