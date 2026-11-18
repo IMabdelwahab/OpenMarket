@@ -16,8 +16,7 @@ const tabs = [
   { id: 'missions', label: 'Missions & planning', icon: 'assignment', count: 4 },
   { id: 'portfolio', label: 'Mes réalisations', icon: 'photo_library' },
   { id: 'reviews', label: 'Avis clients', icon: 'reviews', count: 128 },
-  { id: 'documents', label: 'Documents & certifications', icon: 'policy' },
-  { id: 'wallet', label: 'Revenus & séquestre', icon: 'account_balance_wallet' },
+  // { id: 'documents', label: 'Documents & certifications', icon: 'policy' },
 ]
 
 const jobs = [
@@ -120,9 +119,7 @@ function ArtisanProfile() {
       <main className="profile-main artisan-profile-main">
         <div className="artisan-dashboard-heading">
           <div>
-            <p className="profile-eyebrow">ESPACE PROFESSIONNEL</p>
-            <h1>Bonjour Mohamed, prêt pour votre journée ?</h1>
-            <p>Suivez vos missions, votre planning et vos revenus sur OpenMarket.</p>
+            <h1>Bonjour, prêt pour votre journée ?</h1>   
           </div>
           <button
             aria-pressed={available}
@@ -130,59 +127,24 @@ function ArtisanProfile() {
             onClick={() => setAvailable((value) => !value)}
             type="button"
           >
-            <span />
+            
             {available ? 'Disponible pour missions' : 'Indisponible'}
           </button>
         </div>
-
-        {urgentRequest && (
-          <section className="artisan-urgent-request" aria-labelledby="urgent-request-title">
-            <div className="urgent-request-main">
-              <span className="urgent-request-icon"><ProfileIcon>e911_emergency</ProfileIcon></span>
-              <div>
-                <div className="urgent-request-meta">
-                  <span>Demande urgente directe</span>
-                  <strong><ProfileIcon>timer</ProfileIcon>Expire dans 08:42 min</strong>
-                </div>
-                <h2 id="urgent-request-title">Fuite d’eau sous évier cuisine et robinet d’arrêt bloqué</h2>
-                <p><span><ProfileIcon>near_me</ProfileIcon>À 1,2 km de vous</span><i />Casablanca Bourgogne · Budget estimé : 250–350 DH</p>
-              </div>
-            </div>
-            <div className="urgent-request-actions">
-              <button className="artisan-decline-button" onClick={() => { setUrgentRequest(false); setQuoteOpen(false) }} type="button">Décliner</button>
-              <button className="artisan-quote-button" onClick={() => setQuoteOpen((open) => !open)} type="button"><ProfileIcon>send</ProfileIcon>Envoyer un devis express</button>
-            </div>
-            {quoteOpen && (
-              <form className="artisan-quote-form" onSubmit={submitQuote}>
-                <label htmlFor="artisan-quote-amount">Votre devis (DH)</label>
-                <input id="artisan-quote-amount" min="1" onChange={(event) => setQuoteAmount(event.target.value)} required type="number" value={quoteAmount} />
-                <button className="artisan-quote-button" type="submit">Confirmer le devis</button>
-              </form>
-            )}
-          </section>
-        )}
-        {notice && <p className="artisan-notice" role="status">{notice}</p>}
 
         <ProfileSummary
           className="artisan-summary"
           name="Mohamed Bennani"
           memberLabel="Maâlem Or · 14 ans d’expérience"
-          badges={[
-            { icon: 'verified_user', label: 'CIN & casier vérifiés' },
-            { icon: 'security', label: 'Partenaire AXA Assurances' },
-            { icon: 'workspace_premium', label: 'Agrément qualité A+' },
-          ]}
+          
           stats={[
             { value: '214', label: 'Chantiers réalisés' },
             { value: '4,9', icon: 'star', label: '128 avis vérifiés' },
-            { value: '98%', label: 'Taux de réactivité' },
-            { value: '18 450', label: 'DH débloqués' },
           ]}
         />
         <div className="artisan-profile-info">
           <p><ProfileIcon>plumbing</ProfileIcon>Maître plombier chauffagiste & sanitaire</p>
           <p><ProfileIcon>location_on</ProfileIcon>Casablanca · Maârif, Gauthier, Racine, Bourgogne, Anfa, Oasis</p>
-          <p><ProfileIcon>badge</ProfileIcon>ID professionnel : ML-CAS-4902</p>
           <div>
             <button type="button" onClick={() => setNotice('La modification du profil est disponible dans cette maquette frontend.')}>
               <ProfileIcon>edit</ProfileIcon>Modifier le profil public
@@ -218,7 +180,6 @@ function ArtisanProfile() {
                     />
                   ))}
                 </div>
-                <p className="profile-demo-note">Les interventions et actions affichées sont des exemples frontend.</p>
               </section>
               <aside className="artisan-side-column">
                 <section className="artisan-panel artisan-next-step">
@@ -250,7 +211,6 @@ function ArtisanProfile() {
               <div className="artisan-portfolio-grid">
                 {projects.map((project) => <ArtisanPortfolioCard key={project.title} project={project} />)}
               </div>
-              <p className="profile-demo-note">Galerie de démonstration ; aucune photo ou réalisation n’est envoyée au serveur.</p>
             </section>
           )}
 
@@ -266,11 +226,10 @@ function ArtisanProfile() {
               <div className="profile-review-list">
                 {reviews.map((review) => <ProfileReviewCard key={review.artisan} review={review} />)}
               </div>
-              <p className="profile-demo-note">Les avis présentés sont des exemples de démonstration frontend.</p>
             </section>
           )}
 
-          {activeTab === 'documents' && (
+          {/* {activeTab === 'documents' && (
             <section className="artisan-panel" aria-labelledby="artisan-documents-title">
               <ProfileSectionHeading
                 eyebrow="DOSSIER PROFESSIONNEL"
@@ -292,36 +251,10 @@ function ArtisanProfile() {
                 ))}
               </div>
               <button className="artisan-outline-button" onClick={() => setNotice('La mise à jour des attestations est une action de démonstration frontend.')} type="button"><ProfileIcon>upload_file</ProfileIcon>Mettre à jour mes attestations</button>
-              <p className="profile-demo-note">Les documents et statuts affichés sont des exemples frontend.</p>
             </section>
-          )}
+          )} */}
 
-          {activeTab === 'wallet' && (
-            <section className="artisan-panel" aria-labelledby="artisan-wallet-title">
-              <ProfileSectionHeading
-                eyebrow="REVENUS & SÉQUESTRE"
-                title="Votre portefeuille professionnel"
-                titleId="artisan-wallet-title"
-                description="Consultez les sommes disponibles et les règlements en attente."
-              />
-              <div className="artisan-wallet-grid">
-                <article className="artisan-wallet-card">
-                  <div className="artisan-wallet-title"><span>Solde disponible</span><ProfileIcon>account_balance</ProfileIcon></div>
-                  <strong>18 450,00 <span>DH</span></strong>
-                  <p><ProfileIcon>lock_open</ProfileIcon>Fonds débloqués après validation client</p>
-                  <div className="artisan-bank-detail"><span>Compte de versement</span><strong>Attijariwafa Bank</strong><small>RIB : •••• •••• •••• 0044</small></div>
-                  <button onClick={() => setNotice('Demande de virement enregistrée dans cette maquette frontend.')} type="button"><ProfileIcon>currency_exchange</ProfileIcon>Demander un virement anticipé</button>
-                </article>
-                <article className="artisan-balance-card">
-                  <span className="profile-eyebrow">EN SÉQUESTRE</span>
-                  <strong>2 150 <span>DH</span></strong>
-                  <p>2 interventions en cours de validation client.</p>
-                  <div><span>Prochain versement estimé</span><b>01 mars 2026</b></div>
-                </article>
-              </div>
-              <p className="profile-demo-note">Soldes et coordonnées bancaires présentés à titre d’exemple, sans connexion au backend.</p>
-            </section>
-          )}
+        
         </div>
 
         <ProfileSupport

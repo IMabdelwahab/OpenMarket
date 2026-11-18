@@ -7,7 +7,7 @@ function Testimonials() {
           <span className="font-label-md text-label-md text-secondary-container uppercase tracking-wider font-bold block mb-1">Avis certifiés</span>
           <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold">La parole à nos clients</h2>
           <p className="font-body-md text-body-md text-on-surface-variant mt-2">
-            Des particuliers marocains partagent leur expérience avec les artisans certifiés OpenMarket.
+            Des particuliers marocains partagent leur expérience avec les artisans certifiés ArtisanMarket.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

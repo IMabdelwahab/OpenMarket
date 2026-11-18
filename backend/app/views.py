@@ -11,10 +11,7 @@ from rest_framework.decorators import api_view , permission_classes
 from rest_framework.permissions import IsAuthenticated, AllowAny
 # Create your views here.
 
-def home(request):
-    return HttpResponse("hello")
-    # just to test the app working well
-#   #   #   USER 
+
 @api_view(['GET'])
 def getUsersApi(request):
     users = User.objects.all()
@@ -30,8 +27,18 @@ def getUserByIdApi(request,id):
     return Response(serializer.data)
 
 @api_view(['GET'])
-def getUserRole(request,phoneNumber):
+# @permission_classes([IsAuthenticated])
+def getUserInfosByPhone(request, phone_number):
+    try :
+        user = User.objects.get(phone_number=phone_number)
+    except User.DoesNotExist:
+        return Response({'message' : 'user does not exist'})
     
+    serializer = UserSerializer(user, many=False)
+    return Response(serializer.data)
+
+@api_view(['GET'])
+def getUserRole(request,phoneNumber):
     try:
         user = User.objects.get(phone_number=phoneNumber)
     except User.DoesNotExist:
@@ -48,7 +55,7 @@ def addUser(request):
     return Response(serializer.data)
 
 @api_view(['DELETE'])
-@permission_classes([IsAuthenticated])
+@permission_classes(IsAuthenticated)
 def deleteUserByPhone(request):
     data = request.data.copy()
     try:
@@ -59,12 +66,6 @@ def deleteUserByPhone(request):
     return Response({"message" : "success"})
 
 #   #   #   CLIENT 
-@api_view(['GET'])
-@permission_classes(IsAuthenticated)
-def getClientByPhoneApi(request,phone_number):
-    client = Client.objects.get(phone_number=phone_number)
-    serializer = ClientSerializer(client, many=False)
-    return Response(serializer.data)
 
 @api_view(['POST'])
 def addClient(request):
@@ -185,3 +186,32 @@ def getCities(request):
     cities = City.objects.all()
     serializer = CitySerializer(cities, many=True)
     return Response(serializer.data)
+
+
+@api_view(["POST"])
+@permission_classes([IsAuthenticated])
+def createServiceRequest(request):
+    try:
+        client = request.user.client
+    except Client.DoesNotExist:
+        return Response(
+            {"detail": "Seuls les comptes clients peuvent publier une demande."},
+            status=status.HTTP_403_FORBIDDEN,
+        )
+
+    data = request.data.copy()
+    attachments = request.FILES.getlist("attachments")
+    if hasattr(data, "setlist"):
+        data.setlist("attachments", attachments)
+    else:
+        data["attachments"] = attachments
+
+    serializer = ServiceRequestCreateSerializer(data=data)
+    if not serializer.is_valid():
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    service_request = serializer.save(client=client)
+    return Response(
+        {"id": service_request.id, "statut": service_request.statut},
+        status=status.HTTP_201_CREATED,
+    )

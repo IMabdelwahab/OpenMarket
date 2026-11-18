@@ -5,12 +5,11 @@ function ProfileSummary({ name, memberLabel, badges, stats, className = '' }) {
 
   return (
     <section className={`profile-summary ${className}`.trim()} aria-label="Résumé du profil">
-      <div className="profile-identity">
+      <div className="profile-identity pt-6">
         <div className="profile-avatar" aria-hidden="true">{initials}</div>
         <div className="profile-identity-copy">
           <div className="profile-name-row">
             <h2>{name}</h2>
-            <span className="member-label">{memberLabel}</span>
           </div>
           <div className="profile-badges">
             {badges.map((badge) => (
@@ -32,3 +31,4 @@ function ProfileSummary({ name, memberLabel, badges, stats, className = '' }) {
 }
 
 export default ProfileSummary
+ 

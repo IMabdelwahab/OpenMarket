@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link, useLocation } from 'react-router'
 import axios from 'axios'
+import { PlusSquare, PlusCircle, User } from 'lucide-react'
 
 const navItems = [
   // { label: 'Trouver un artisan', href: '/artisans' },
@@ -130,46 +131,11 @@ function Navbar({ variant = 'default' }) {
   return (
     <header className="site-header" ref={headerRef}>
       <nav className="navbar" aria-label="Navigation principale">
-        <Link className="brand" to="/" aria-label="OpenMarket — Accueil" onClick={() => setMenuOpen(false)}>
+        <Link className="brand" to="/" aria-label="ArtisanMarket — Accueil" onClick={() => setMenuOpen(false)}>
           <BrandMark />
-          <span>OpenMarket</span>
+          <span>ArtisanMarket</span>
         </Link>
 
-        {/* <div className="city-picker" ref={cityMenuRef}>
-          <button
-            className="city-trigger"
-            type="button"
-            aria-haspopup="listbox"
-            aria-expanded={cityOpen}
-            onClick={() => setCityOpen((open) => !open)}
-          >
-            <PinIcon />
-            <span>{city}</span>
-            <svg className="chevron" viewBox="0 0 20 20" aria-hidden="true">
-              <path d="m6 8 4 4 4-4" />
-            </svg>
-          </button>
-
-           {cityOpen && (
-            <div className="city-menu" role="listbox" aria-label="Choisir une ville">
-              {cities.map((city) => {
-                return (
-                  <button
-                    type="button"
-                    role="option"
-                    // aria-selected={city === city}
-                    key={city.id}
-                  onClick={() => {
-                    setCity(city.name)
-                    setCityOpen(false)
-                  }}
-                >
-                  {city.name}
-                </button>
-              )})}
-            </div>
-          )} 
-        </div> */}
 
         <div className={`nav-content${menuOpen ? ' is-open' : ''}`}>
           <div className="nav-links">
@@ -212,8 +178,9 @@ function Navbar({ variant = 'default' }) {
                 <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M20 15a2 2 0 0 1-2 2H9l-5 4V6a2 2 0 0 1 2-2h12a2 2 0 0 1 2 2v9Z" /></svg>
               </button>
             </>}
-            <Link className="request-button" to={variant === 'home' ? '/signUp' : '/publier-une-demande'} onClick={() => setMenuOpen(false)}>
-              <span className="plus-circle" aria-hidden="true">+</span>
+            <Link to={"/profile"}><User className="icon-button text-gray-600"></User></Link>
+            <Link className="request-button" to={variant === 'home' ? '/logIn' : '/publier-une-demande'} onClick={() => setMenuOpen(false)}>
+              <PlusCircle></PlusCircle>
               Publier une demande
             </Link>
           </div>

@@ -77,13 +77,31 @@ class ServiceRequest(models.Model):
         on_delete=models.CASCADE,
         related_name="serviceRequestes",
     )
-    description = models.TextField(max_length=200)
+    description = models.TextField(max_length=600)
     localisation = models.CharField(max_length=255)
+    categorie = models.CharField(max_length=100, default="")
+    sous_service = models.CharField(max_length=100, default="")
+    ville = models.CharField(max_length=100, default="")
+    etage = models.CharField(max_length=150, blank=True)
+    ascenseur = models.BooleanField(default=False)
+    stationnement = models.BooleanField(default=False)
     urgence = models.BooleanField(default=False)
-    statut = models.CharField(max_length=50)
+    date_intervention = models.DateField(null=True, blank=True)
+    creneau = models.CharField(max_length=50, blank=True)
+    statut = models.CharField(max_length=50, default="EN_ATTENTE")
 
     def __str__(self):
         return f"ServiceRequest #{self.pk} - {self.client}"
+
+
+class ServiceRequestAttachment(models.Model):
+    service_request = models.ForeignKey(
+        ServiceRequest,
+        on_delete=models.CASCADE,
+        related_name="attachments",
+    )
+    fichier = models.FileField(upload_to="service_requests/%Y/%m/")
+    nom_original = models.CharField(max_length=255)
 
 
 class Proposal(models.Model):

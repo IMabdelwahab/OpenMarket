@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useContext } from 'react'
 import Navbar from '../components/Navbar'
 import Footer from '../components/Footer'
 import ProfileIcon from '../components/ProfileIcon'
@@ -9,6 +9,11 @@ import ProfileRequestCard from '../components/ProfileRequestCard'
 import ProfileReviewCard from '../components/ProfileReviewCard'
 import ProfileSupport from '../components/ProfileSupport'
 import './profile.css'
+import { UserSearchIcon } from 'lucide-react'
+import axios from 'axios'
+import userInfos from '../contexts/userInfosContext'
+import authContext from '../contexts/authContext'
+
 
 const requests = [
   {
@@ -70,18 +75,20 @@ const tabs = [
   { id: 'requests', label: 'Mes demandes', icon: 'engineering', count: 8 },
   { id: 'reviews', label: 'Mes avis', icon: 'rate_review', count: 6 },
   { id: 'personal', label: 'Informations personnelles', icon: 'person' },
-  { id: 'security', label: 'Sécurité & adresses', icon: 'lock' },
+  { id: 'security', label: 'Sécurité', icon: 'lock' },
 ]
 
 function ClientProfile() {
-  const [activeTab, setActiveTab] = useState('requests')
+  const {setIsAuthenticated, phoneNumber, setPhoneNumber} = useContext(authContext)
+
+  const [activeTab, setActiveTab] = useState('personal')
   const [requestFilter, setRequestFilter] = useState('Toutes')
   const [editing, setEditing] = useState(false)
-  const [profile, setProfile] = useState({
-    name: 'Youssef Alami',
-    phone: '6 61 23 45 67',
-    email: 'youssef.alami@gmail.com',
-  })
+  
+  const[clientInfos, setClientInfos] = useState({})
+  const [city, setCity] = useState('')
+  const [cities, setCities] = useState([])
+
   const [saveMessage, setSaveMessage] = useState('')
 
   const filteredRequests = requests.filter((request) =>
@@ -94,6 +101,32 @@ function ClientProfile() {
     setSaveMessage('Aperçu mis à jour. Ces informations ne sont pas envoyées au serveur.')
   }
 
+  const fetchClientInfos = async () =>  {
+    try{
+      const response = await axios.get(`http://127.0.0.1:8000/api/getUserInfosByPhone/${phoneNumber}/`)
+      console.log(response.data);
+      setCity(response.data['city'].name)
+      setClientInfos(response.data)  
+    }
+    catch (erro){
+      console.log(error.message);
+    }
+        
+  }
+  const fetchCyties = async () =>{
+    try{
+      const response2 = await axios.get("http://127.0.0.1:8000/api/getCities/")
+      setCities(response2.data)
+    }
+    catch(error){
+      console.log(error.message)
+    }
+  }
+  useEffect(()=>{
+    fetchClientInfos()
+    fetchCyties()
+  },[])
+
   return (
     <div className="profile-page">
       <Navbar />
@@ -101,26 +134,22 @@ function ClientProfile() {
         <div className="profile-page-heading">
           <div>
             <p className="profile-eyebrow">MON ESPACE OPENMARKET</p>
-            <h1>Bonjour, {profile.name.split(' ')[0]} <span aria-hidden="true">👋</span></h1>
-            <p>Retrouvez vos demandes, vos avis et les informations de votre compte.</p>
+            <h1>Bonjour, {clientInfos['first_name']} <span aria-hidden="true">👋</span></h1>
           </div>
           <a className="profile-new-request" href="/artisans">
-            <ProfileIcon>add</ProfileIcon>
+            <UserSearchIcon/>
             Trouver un artisan
           </a>
         </div>
 
         <ProfileSummary
-          name={profile.name}
-          memberLabel="Client depuis 2023"
+          name={`${clientInfos['first_name']} ${clientInfos['last_name']}`}
           badges={[
-            { icon: 'verified_user', label: 'Téléphone & e-mail vérifiés' },
-            { icon: 'location_on', label: 'Casablanca, Maarif' },
+            { icon: 'location_on', label: `${city}, ${clientInfos['neighborhood']}` },
           ]}
           stats={[
             { value: '8', label: 'Interventions' },
-            { value: '4,9', icon: 'star', label: 'Satisfaction moyenne' },
-            { value: '0', label: 'Litige déclaré' },
+            // { value: '4,9', icon: 'star', label: 'Satisfaction moyenne' },
           ]}
         />
 
@@ -152,7 +181,6 @@ function ClientProfile() {
               <div className="profile-request-list">
                 {filteredRequests.map((request) => <ProfileRequestCard key={request.id} request={request} />)}
               </div>
-              <p className="profile-demo-note">Aperçu de vos demandes récentes. Le contenu affiché est une démonstration frontend.</p>
             </section>
           )}
 
@@ -162,12 +190,10 @@ function ClientProfile() {
                 eyebrow="VOTRE RETOUR COMPTE"
                 title="Mes avis récents"
                 titleId="reviews-title"
-                actions={<span className="reviews-summary"><ProfileIcon>star</ProfileIcon>4,9 / 5 de moyenne</span>}
               />
               <div className="profile-review-list">
                 {reviews.map((review) => <ProfileReviewCard key={review.artisan} review={review} />)}
               </div>
-              <p className="profile-demo-note">Vous avez laissé 6 avis au total. Les avis affichés sont des exemples de démonstration.</p>
             </section>
           )}
 
@@ -177,25 +203,36 @@ function ClientProfile() {
                 eyebrow="VOTRE COMPTE"
                 title="Informations personnelles"
                 titleId="personal-title"
-                description="Gérez les coordonnées associées à votre espace client."
                 actions={!editing && <button className="profile-button profile-button-primary" onClick={() => { setEditing(true); setSaveMessage('') }} type="button"><ProfileIcon>edit</ProfileIcon>Modifier mes données</button>}
               />
               <form className="profile-personal-card" onSubmit={updateProfile}>
                 <label>
-                  <span>Nom complet</span>
-                  <input disabled={!editing} onChange={(event) => setProfile({ ...profile, name: event.target.value })} value={profile.name} />
+                  <span>Nom </span>
+                  <input disabled={!editing} onChange={(event) => setClientInfos({ ...userInfos, last_name: event.target.value })} value={clientInfos.last_name} />
+                </label>
+                <label>
+                  <span>Prénom</span>
+                  <input disabled={!editing} onChange={(event) => setClientInfos({ ...userInfos, last_name: event.target.value })} value={clientInfos.first_name} />
                 </label>
                 <label>
                   <span>Téléphone mobile</span>
-                  <div className="profile-phone-input"><span>🇲🇦 +212</span><input disabled={!editing} onChange={(event) => setProfile({ ...profile, phone: event.target.value })} type="tel" value={profile.phone} /></div>
+                  <div className="profile-phone-input"><span>🇲🇦 +212</span><input disabled={!editing} onChange={(event) => setClientInfos({ ...clientInfos, phone: event.target.value })} type="tel" value={clientInfos.phone_number} /></div>
                 </label>
                 <label>
                   <span>Adresse e-mail</span>
-                  <input disabled={!editing} onChange={(event) => setProfile({ ...profile, email: event.target.value })} type="email" value={profile.email} />
+                  <input disabled={!editing} onChange={(event) => setClientInfos({ ...clientInfos, email: event.target.value })} type="email" value={clientInfos.email} />
                 </label>
                 <label>
-                  <span>Langue préférée</span>
-                  <select disabled={!editing} defaultValue="fr"><option value="fr">Français</option><option value="darija">Darija (الدارجة)</option></select>
+                  <span>Ville</span>
+                  <select disabled={!editing} defaultValue="fr">
+                    {cities.map((city)=>(
+                      <option value={city.name} key={city.id}>{city.name}</option>
+                    ))}
+                  </select>
+                </label>
+                <label>
+                  <span>Quartier</span>
+                  <input disabled={!editing} onChange={(event) => setClientInfos({ ...clientInfos, email: event.target.value })} type="text" value={clientInfos.neighborhood} />
                 </label>
                 {editing && <div className="profile-form-actions">
                   <button className="profile-button profile-button-secondary" onClick={() => { setEditing(false); setSaveMessage('') }} type="button">Annuler</button>
@@ -210,27 +247,29 @@ function ClientProfile() {
             <section aria-labelledby="security-title">
               <ProfileSectionHeading
                 eyebrow="PROTECTION DU COMPTE"
-                title="Sécurité & adresses enregistrées"
+                title="Sécurité "
                 titleId="security-title"
-                description="Vérifiez vos accès et choisissez l’adresse de vos prochaines interventions."
               />
               <div className="profile-security-grid">
                 <article className="profile-security-card">
                   <div className="security-icon"><ProfileIcon>shield_lock</ProfileIcon></div>
-                  <div><h3>Mot de passe</h3><p>Votre mot de passe protège l’accès à votre compte.</p><span className="security-hint"><ProfileIcon>check_circle</ProfileIcon>Compte protégé</span></div>
+                  <div><h3>Mot de passe</h3><p>Votre mot de passe protège l’accès à votre compte.</p></div>
                   <button className="profile-button profile-button-secondary" type="button">Modifier</button>
                 </article>
                 <article className="profile-security-card">
                   <div className="security-icon"><ProfileIcon>mark_email_read</ProfileIcon></div>
-                  <div><h3>Coordonnées vérifiées</h3><p>{profile.email}<br />+212 {profile.phone}</p><span className="security-hint"><ProfileIcon>verified</ProfileIcon>E-mail et téléphone vérifiés</span></div>
+                  <div>
+                    <h3>Coordonnées vérifiées</h3>
+                    <p>
+                      Email : {clientInfos.email}
+                      <br />
+                      Tel : +212 {clientInfos.phone_number}
+                    </p>
+                    <span className="security-hint">
+                    </span>
+                  </div>
                 </article>
               </div>
-              <div className="profile-address-heading"><div><h3>Adresses d’intervention</h3><p>Choisissez une adresse enregistrée pour vos demandes.</p></div><button className="profile-button profile-button-secondary" type="button"><ProfileIcon>add_location_alt</ProfileIcon>Ajouter une adresse</button></div>
-              <div className="profile-address-grid">
-                <article className="profile-address-card is-default"><div><ProfileIcon>home</ProfileIcon><h4>Domicile principal</h4><span>Par défaut</span></div><p>24 Rue Jean Jaurès, Maarif</p><small>Casablanca 20100 · Sonnette « Alami »</small></article>
-                <article className="profile-address-card"><div><ProfileIcon>cottage</ProfileIcon><h4>Maison secondaire</h4></div><p>Résidence Bouskoura Golf City</p><small>Bouskoura, Grand Casablanca</small></article>
-              </div>
-              <p className="profile-demo-note">Les commandes de sécurité et d’adresse sont des éléments d’interface uniquement.</p>
             </section>
           )}
         </div>

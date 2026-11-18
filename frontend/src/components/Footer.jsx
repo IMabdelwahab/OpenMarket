@@ -11,7 +11,7 @@ return (
 <div className="w-9 h-9 rounded-xl bg-secondary-container text-on-secondary flex items-center justify-center">
 <span className="material-symbols-outlined text-title-md">construction</span>
 </div>
-<span className="text-headline-md font-headline-md font-bold text-on-primary tracking-tight">OpenMarket</span>
+<span className="text-headline-md font-headline-md font-bold text-on-primary tracking-tight">ArtisanMarket</span>
 </div>
 <p className="font-body-sm text-body-sm text-on-primary-container max-w-sm">
             Première plateforme d'artisans au Maroc certifiés sur pièce d'identité avec assurance responsabilité civile professionnelle incluse et avis clients contrôlés.

@@ -7,11 +7,11 @@ function HowItWorks() {
           <span className="font-label-md text-label-md text-secondary-container uppercase tracking-wider font-bold block mb-1">Processus garanti</span>
           <h2 className="font-headline-lg text-headline-lg-mobile md:text-headline-lg text-primary font-bold">Comment ça marche ?</h2>
           <p className="font-body-md text-body-md text-on-surface-variant mt-2">
-            De la description de votre besoin jusqu'à la fin des travaux, chaque étape est encadrée et sécurisée par OpenMarket.
+            De la description de votre besoin jusqu'à la fin des travaux, chaque étape est encadrée et sécurisée par ArtisanMarket.
           </p>
         </div>
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8 relative">
-          <div className="hidden md:block absolute top-1/3 left-1/6 right-1/6 h-0.5 bg-outline-variant -z-0"></div>
+          <div className="hidden md:block absolute top-1/3 left-1/6 right-1/6 h-0.5 bg-outline-variant"></div>
           <div className="bg-surface-container-lowest p-8 rounded-2xl border border-outline-variant shadow-sm relative z-10 flex flex-col items-center text-center">
             <div className="w-16 h-16 rounded-2xl bg-primary text-on-primary flex items-center justify-center font-headline-md text-headline-md mb-6 shadow-md">
               1

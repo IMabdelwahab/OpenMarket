@@ -59,8 +59,8 @@ function SearchConsole({ onSubmit }) {
         </div>
         <div className="md:col-span-12 lg:col-span-2 flex items-center">
           <button className="w-full h-full min-h-13 bg-secondary-container hover:bg-secondary text-on-secondary font-label-lg text-label-lg rounded-xl flex items-center justify-center gap-2 shadow-md hover:shadow-lg transition-all active:scale-95 duration-100 ease-out" type="submit">
-            <span className="material-symbols-outlined text-title-sm" aria-hidden="true">search</span>
-            <span className="">Chercher</span>
+            <span className="material-symbols-outlined text-title-sm text-white" aria-hidden="true">search</span>
+            <span className="text-white">Chercher</span>
           </button>
         </div>
       </form>
